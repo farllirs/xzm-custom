@@ -1,4 +1,5 @@
 const KNOWN_API_BASES = [
+    "https://odd-mayfly-47.loca.lt/api",
     "https://xzm-api-store.loca.lt/api",
     "https://young-mouse-26.loca.lt/api"
 ];
