@@ -50,35 +50,54 @@
                 </div>
             </div>
 
-            <section class="shop-section">
+            <div class="shop-section">
                 <h2 style="margin-bottom: 30px; font-size: 2rem;">🛍️ Tienda de Personalización</h2>
                 <div class="shop-grid">
                     <div class="shop-card">
                         <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png" alt="Contorno">
                         <div class="item-name">Contorno Neón</div>
                         <span class="item-price">500 XP</span>
-                        <button class="btn-buy">Canjear</button>
+                        <button class="btn-buy" onclick="buyItem('neon', 500, 'contour')">Canjear</button>
                     </div>
                     <div class="shop-card">
                         <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png" alt="Fondo">
-                        <div class="item-name">Fondo Espacial</div>
+                        <div class="item-name">Panel Windows</div>
                         <span class="item-price">1,500 XP</span>
-                        <button class="btn-buy">Canjear</button>
+                        <button class="btn-buy" onclick="buyItem('windows', 1500, 'theme')">Canjear</button>
                     </div>
                     <div class="shop-card">
                         <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png" alt="Acento">
-                        <div class="item-name">Acento Dorado</div>
+                        <div class="item-name">Contorno Dorado</div>
                         <span class="item-price">2,000 XP</span>
-                        <button class="btn-buy">Canjear</button>
+                        <button class="btn-buy" onclick="buyItem('gold', 2000, 'contour')">Canjear</button>
                     </div>
                 </div>
-            </section>
-        </main>
-    </div>
+            </div>
+            </main>
+            </div>
 
-    <script type="module">
-        import { init } from './js/ui.js';
-        init();
-    </script>
-</body>
+            <script type="module">
+            import { init } from './js/ui.js';
+            import { purchaseItem } from './js/api.js';
+
+            window.buyItem = async (itemId, price, type) => {
+            const userId = localStorage.getItem('xzm_user_id');
+            if(!userId) return alert("Primero sincroniza tu perfil");
+
+            if(!confirm(`¿Deseas canjear "${itemId}" por ${price} XP?`)) return;
+
+            try {
+                const data = await purchaseItem(userId, itemId, price, type);
+                if(data.error) throw new Error(data.error);
+
+                alert("¡Compra realizada con éxito! Tu perfil ha sido actualizado.");
+                location.reload(); // Recargar para ver el nuevo XP y estilos
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+            };
+
+            init();
+            </script>
+            </body>
 </html>
