@@ -1,4 +1,6 @@
-const API_BASE = "http://localhost:3000/api";
+// URL del túnel generado por el bot (ej: https://xzm-api-store.loca.lt)
+// Puedes cambiarla manualmente aquí si el túnel cambia.
+const API_BASE = "https://xzm-api-store.loca.lt/api";
 
 export async function getUserProfile(userId) {
     try {
