@@ -1,7 +1,7 @@
 const KNOWN_API_BASES = [
+    window.location.origin + "/api",
     "https://xzp-custom.farllirs.com/api",
-    "https://odd-mayfly-47.loca.lt/api",
-    "https://xzm-api-store.loca.lt/api"
+    "https://odd-mayfly-47.loca.lt/api"
 ];
 
 const headers = {
