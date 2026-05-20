@@ -2,820 +2,120 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="XZM Custom">
-    <meta name="theme-color" content="#7c3aed">
-    <meta name="description" content="Personaliza tu identidad en Discord con estilos exclusivos.">
-    <title>XZM Custom | Tienda de Estilos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XZM Store</title>
+    <link rel="stylesheet" href="css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --primary: #7c3aed;
-            --primary-light: #a78bfa;
-            --secondary: #ec4899;
-            --accent: #06b6d4;
-            --dark-bg: #0a0a14;
-            --dark-surface: #1a1a2e;
-            --dark-card: #242438;
-            --light-bg: #f8f7ff;
-            --light-surface: #ffffff;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-tertiary: rgba(255, 255, 255, 0.5);
-            --border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a0f3d 100%);
-            color: var(--text-primary);
-            overflow-x: hidden;
-        }
-
-        /* ===== LAYOUT PRINCIPAL ===== */
-        .app-container {
-            display: flex;
-            height: 100vh;
-            width: 100%;
-        }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 320px;
-            background: rgba(26, 26, 46, 0.4);
-            backdrop-filter: blur(30px);
-            border-right: 1px solid var(--border-color);
-            padding: 32px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.5), transparent);
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 24px;
-            color: white;
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
-        }
-
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .logo-text h1 {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .logo-text p {
-            font-size: 12px;
-            color: var(--text-tertiary);
-            font-weight: 500;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .nav-item {
-            padding: 12px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-secondary);
-            background: transparent;
-            border: none;
-            width: 100%;
-            text-align: left;
-        }
-
-        .nav-item:hover {
-            background: rgba(124, 58, 237, 0.15);
-            color: var(--primary-light);
-        }
-
-        .nav-item.active {
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(236, 72, 153, 0.2) 100%);
-            color: var(--primary-light);
-            border-left: 3px solid var(--primary);
-            padding-left: 13px;
-        }
-
-        .status-indicator {
-            width: 12px;
-            height: 12px;
-            background: #06b6d4;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* MAIN CONTENT */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(135deg, rgba(10, 10, 20, 0.8) 0%, rgba(26, 15, 61, 0.6) 100%);
-            overflow-y: auto;
-        }
-
-        .top-bar {
-            height: 80px;
-            background: rgba(26, 26, 46, 0.3);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 48px;
-            gap: 24px;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 400px;
-        }
-
-        .search-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border-color);
-            padding: 10px 16px;
-            border-radius: 24px;
-            color: var(--text-primary);
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .search-input::placeholder {
-            color: var(--text-tertiary);
-        }
-
-        .search-input:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.12);
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
-        }
-
-        .top-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .btn-sync {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 24px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
-        }
-
-        .btn-sync:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(124, 58, 237, 0.4);
-        }
-
-        .btn-sync:active {
-            transform: translateY(0);
-        }
-
-        /* CONTENT AREA */
-        .content-area {
-            flex: 1;
-            padding: 48px;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 48px;
-            overflow-y: auto;
-        }
-
-        /* PROFILE CARD */
-        .profile-card {
-            background: rgba(36, 36, 56, 0.6);
-            backdrop-filter: blur(30px);
-            border: 1px solid var(--border-color);
-            border-radius: 28px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
-            height: fit-content;
-            position: sticky;
-            top: 48px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .profile-avatar {
-            width: 160px;
-            height: 160px;
-            border-radius: 40px;
-            border: 4px solid var(--primary);
-            object-fit: cover;
-            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3);
-        }
-
-        .profile-info {
-            text-align: center;
-            width: 100%;
-        }
-
-        .profile-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .profile-name {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .profile-tag {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-        }
-
-        .stats-container {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .stat-box {
-            background: rgba(124, 58, 237, 0.1);
-            border: 1px solid rgba(124, 58, 237, 0.2);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* SHOP GRID */
-        .shop-container {
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-        }
-
-        .shop-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .shop-header h2 {
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 24px;
-        }
-
-        .shop-card {
-            background: rgba(36, 36, 56, 0.5);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .shop-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .shop-card:hover {
-            border-color: var(--primary);
-            background: rgba(36, 36, 56, 0.8);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
-        }
-
-        .shop-card:hover::before {
-            opacity: 1;
-        }
-
-        .shop-card-icon {
-            width: 100px;
-            height: 100px;
-            background: rgba(124, 58, 237, 0.15);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .shop-card img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            filter: drop-shadow(0 8px 16px rgba(124, 58, 237, 0.2));
-            position: relative;
-            z-index: 1;
-        }
-
-        .shop-card-name {
-            font-size: 16px;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
-        }
-
-        .shop-card-rarity {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .rarity-common {
-            background: #999;
-            color: #000;
-        }
-
-        .rarity-rare {
-            background: #00f2ff;
-            color: #000;
-        }
-
-        .rarity-executive {
-            background: #ffd700;
-            color: #000;
-        }
-
-        .rarity-exclusive {
-            background: linear-gradient(45deg, #ff0000, #0000ff);
-            color: #fff;
-        }
-
-        .shop-card-price {
-            font-size: 18px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #06b6d4 0%, var(--primary-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 1;
-        }
-
-        .shop-card-requirement {
-            font-size: 12px;
-            color: var(--text-tertiary);
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-buy {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-            margin-top: auto;
-        }
-
-        .btn-buy:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
-        }
-
-        .btn-buy:active {
-            transform: scale(0.98);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 1400px) {
-            .content-area {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-
-            .profile-card {
-                position: static;
-            }
-        }
-
-        @media (max-width: 1024px) {
-            .app-container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                flex-direction: row;
-                padding: 16px 24px;
-                gap: 24px;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-                overflow-x: auto;
-                overflow-y: hidden;
-            }
-
-            .logo-section {
-                border-bottom: none;
-                padding-bottom: 0;
-                min-width: fit-content;
-            }
-
-            .nav-menu {
-                flex-direction: row;
-                gap: 4px;
-                min-width: fit-content;
-            }
-
-            .nav-item {
-                white-space: nowrap;
-            }
-
-            .top-bar {
-                flex-wrap: wrap;
-                height: auto;
-                padding: 16px 24px;
-                gap: 16px;
-            }
-
-            .search-container {
-                max-width: 100%;
-                order: 3;
-                flex-basis: 100%;
-            }
-
-            .content-area {
-                padding: 24px;
-                grid-template-columns: 1fr;
-            }
-
-            .shop-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-        }
-
-        @media (max-width: 640px) {
-            .sidebar {
-                padding: 12px 16px;
-                gap: 12px;
-            }
-
-            .logo-text h1 {
-                font-size: 16px;
-            }
-
-            .top-bar {
-                padding: 12px 16px;
-            }
-
-            .content-area {
-                padding: 16px;
-                gap: 16px;
-            }
-
-            .profile-card {
-                padding: 24px;
-            }
-
-            .profile-avatar {
-                width: 120px;
-                height: 120px;
-                border-radius: 28px;
-            }
-
-            .profile-name {
-                font-size: 20px;
-            }
-
-            .shop-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 16px;
-            }
-
-            .shop-card {
-                padding: 16px;
-            }
-
-            .shop-card img {
-                width: 80px;
-                height: 80px;
-            }
-
-            .shop-card-name {
-                font-size: 14px;
-            }
-
-            .shop-card-price {
-                font-size: 16px;
-            }
-
-            .btn-buy {
-                padding: 10px 12px;
-                font-size: 12px;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="app-container">
+    <div class="app-window">
         <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="logo-section">
-                <div class="logo-icon">✨</div>
-                <div class="logo-text">
-                    <h1>XZM Custom</h1>
-                    <p>Tienda de Estilos</p>
-                </div>
+            <div class="brand">
+                <div class="brand-dot"></div>
+                <span class="brand-name">XZM Store</span>
             </div>
 
-            <nav class="nav-menu">
-                <button class="nav-item active">
-                    <span class="status-indicator"></span>
-                    Sincronizar
-                </button>
-                <button class="nav-item">
-                    <span>🛍️</span>
-                    Tienda
-                </button>
-                <button class="nav-item">
-                    <span>⭐</span>
-                    Favoritos
-                </button>
-                <button class="nav-item">
-                    <span>📊</span>
-                    Estadísticas
-                </button>
+            <nav class="nav-links">
+                <button class="nav-item active">🛒 Tienda</button>
+                <button class="nav-item">👤 Perfil</button>
+                <button class="nav-item">⚙️ Ajustes</button>
             </nav>
         </aside>
 
         <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <!-- TOP BAR -->
-            <div class="top-bar">
-                <div class="search-container">
-                    <input type="text" id="userId" class="search-input" placeholder="Ingresa tu Discord ID..." autocomplete="off">
+        <main class="main">
+            <header>
+                <h1>Personalización</h1>
+                <div class="sync-box">
+                    <input type="text" id="userId" placeholder="ID o Token..." autocomplete="off">
+                    <button class="btn-sync" id="searchBtn">Sincronizar</button>
                 </div>
-                <div class="top-actions">
-                    <button class="btn-sync" id="searchBtn">Sincronizar Perfil</button>
-                </div>
-            </div>
+            </header>
 
-            <!-- CONTENT -->
-            <div class="content-area" id="mainContent" style="display: none;">
-                <!-- PROFILE CARD -->
-                <div class="profile-card">
-                    <img src="" id="userAvatar" class="profile-avatar" alt="Avatar">
-                    <div class="profile-info">
-                        <div class="profile-badge">Nivel <span id="userLevel">0</span></div>
-                        <h3 class="profile-name" id="userName">Cargando...</h3>
-                        <p class="profile-tag" id="userTag">@usuario</p>
-                        <div class="stats-container">
-                            <div class="stat-box">
-                                <div class="stat-label">XP Disponible</div>
-                                <div class="stat-value" id="userXP">0</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="stat-label">Rango Global</div>
-                                <div class="stat-value">#--</div>
+            <div id="mainContent" style="display: none;">
+                <!-- USER SECTION -->
+                <section class="profile-section">
+                    <div class="profile-card">
+                        <img src="" id="userAvatar" class="avatar" alt="Avatar">
+                        <div class="user-info">
+                            <h2 id="userName">Cargando...</h2>
+                            <p class="user-tag" id="userTag">@usuario</p>
+                            <div class="stats">
+                                <div class="stat-item">
+                                    <span class="label">Nivel</span>
+                                    <span class="value" id="userLevel">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="label">XP</span>
+                                    <span class="value" id="userXP">0</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <!-- SHOP SECTION -->
-                <div class="shop-container">
-                    <div class="shop-header">
-                        <h2>🛍️ Tienda de Personalización</h2>
+                <section class="shop-grid">
+                    <div class="item-card">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png" class="item-icon">
+                        <div class="item-name">Windows Classic</div>
+                        <span class="rarity">Common</span>
+                        <span class="item-price">2,500 XP</span>
+                        <button class="btn-buy" onclick="buyItem('windows', 'themes')">Canjear</button>
                     </div>
-                    <div class="shop-grid">
-                        <div class="shop-card">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png" alt="Panel Windows">
-                            <div class="shop-card-name">Panel Windows</div>
-                            <span class="shop-card-rarity rarity-common">Common</span>
-                            <div class="shop-card-price">2,500 XP</div>
-                            <p class="shop-card-requirement">Requisito: Nivel 5</p>
-                            <button class="btn-buy" onclick="buyItem('windows', 'themes')">Comprar</button>
-                        </div>
 
-                        <div class="shop-card">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png" alt="Contorno Neón">
-                            <div class="shop-card-name">Contorno Neón</div>
-                            <span class="shop-card-rarity rarity-rare">Rare</span>
-                            <div class="shop-card-price">5,000 XP</div>
-                            <p class="shop-card-requirement">Requisito: Nivel 10</p>
-                            <button class="btn-buy" onclick="buyItem('neon', 'contours')">Comprar</button>
-                        </div>
-
-                        <div class="shop-card">
-                            <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png" alt="Contorno Dorado">
-                            <div class="shop-card-name">Contorno Dorado</div>
-                            <span class="shop-card-rarity rarity-executive">Executive</span>
-                            <div class="shop-card-price">15,000 XP</div>
-                            <p class="shop-card-requirement">Requisito: Nivel 25</p>
-                            <button class="btn-buy" onclick="buyItem('gold', 'contours')">Comprar</button>
-                        </div>
-
-                        <div class="shop-card">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1458/1458567.png" alt="Contorno RGB">
-                            <div class="shop-card-name">Contorno RGB</div>
-                            <span class="shop-card-rarity rarity-exclusive">Exclusive</span>
-                            <div class="shop-card-price">50,000 XP</div>
-                            <p class="shop-card-requirement">Requisito: Nivel 50</p>
-                            <button class="btn-buy" onclick="buyItem('chroma', 'contours')">Comprar</button>
-                        </div>
+                    <div class="item-card">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png" class="item-icon">
+                        <div class="item-name">Neon Glow</div>
+                        <span class="rarity">Rare</span>
+                        <span class="item-price">5,000 XP</span>
+                        <button class="btn-buy" onclick="buyItem('neon', 'contours')">Canjear</button>
                     </div>
-                </div>
+
+                    <div class="item-card">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png" class="item-icon">
+                        <div class="item-name">Gold Plated</div>
+                        <span class="rarity">Executive</span>
+                        <span class="item-price">15,000 XP</span>
+                        <button class="btn-buy" onclick="buyItem('gold', 'contours')">Canjear</button>
+                    </div>
+
+                    <div class="item-card">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1458/1458567.png" class="item-icon">
+                        <div class="item-name">RGB Chroma</div>
+                        <span class="rarity">Exclusive</span>
+                        <span class="item-price">50,000 XP</span>
+                        <button class="btn-buy" onclick="buyItem('chroma', 'contours')">Canjear</button>
+                    </div>
+                </section>
             </div>
-        </div>
+        </main>
     </div>
 
     <script type="module">
-        import { getUserProfile } from './js/api.js';
+        import { init } from './js/ui.js';
         import { purchaseItem } from './js/api.js';
-
-        const ui = {
-            searchBtn: document.getElementById('searchBtn'),
-            userIdInput: document.getElementById('userId'),
-            mainContent: document.getElementById('mainContent'),
-            avatar: document.getElementById('userAvatar'),
-            name: document.getElementById('userName'),
-            tag: document.getElementById('userTag'),
-            level: document.getElementById('userLevel'),
-            xp: document.getElementById('userXP')
-        };
-
-        ui.searchBtn.addEventListener('click', handleSearch);
-        ui.userIdInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSearch();
-        });
-
-        async function handleSearch() {
-            const input = ui.userIdInput.value.trim();
-            if (!input) return alert("Por favor, ingresa un ID de Discord.");
-
-            ui.searchBtn.disabled = true;
-            ui.searchBtn.innerText = "Sincronizando...";
-
-            try {
-                const data = await getUserProfile(input);
-                ui.avatar.src = data.avatar;
-                ui.name.innerText = data.globalName || data.username;
-                ui.tag.innerText = `@${data.username}`;
-                ui.level.innerText = data.level;
-                ui.xp.innerText = data.xp.toLocaleString();
-                ui.mainContent.style.display = 'grid';
-                localStorage.setItem('xzm_user_id', input);
-            } catch (error) {
-                alert("Error: " + error.message);
-            } finally {
-                ui.searchBtn.disabled = false;
-                ui.searchBtn.innerText = "Sincronizar Perfil";
-            }
-        }
 
         window.buyItem = async (itemId, category) => {
             const userId = localStorage.getItem('xzm_user_id');
-            if (!userId) return alert("Primero sincroniza tu perfil");
+            if (!userId) return alert("Sincroniza tu perfil primero.");
 
-            if (!confirm(`¿Deseas comprar este item? Se validará tu nivel y XP.`)) return;
+            if (!confirm(`¿Confirmas el canje de este item?`)) return;
 
             try {
                 const data = await purchaseItem(userId, itemId, category);
                 if (data.error) throw new Error(data.error);
-                alert("¡Compra realizada con éxito! Reclama tu estilo en Discord.");
+                alert("¡Éxito! Estilo añadido a tu inventario.");
                 location.reload();
             } catch (err) {
                 alert("Error: " + err.message);
             }
         };
 
-        // Cargar perfil guardado
-        const savedId = localStorage.getItem('xzm_user_id');
-        if (savedId) {
-            ui.userIdInput.value = savedId;
-            handleSearch();
-        }
+        init();
     </script>
 </body>
 </html>
