@@ -3,240 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XZM Custom - Tienda de Estilos</title>
-    <style>
-        :root {
-            --primary: #5865F2;
-            --dark: #0a0a0a;
-            --glass: rgba(255, 255, 255, 0.05);
-            --accent: #27c93f;
-        }
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--dark);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-image: radial-gradient(circle at top right, #1a1a2e, #0a0a0a);
-            overflow-x: hidden;
-        }
-        .navbar {
-            width: 100%;
-            padding: 20px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .container {
-            width: 90%;
-            max-width: 900px;
-            margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .search-box {
-            margin-bottom: 40px;
-            display: flex;
-            gap: 10px;
-        }
-        input {
-            background: var(--glass);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px 20px;
-            color: white;
-            border-radius: 30px;
-            outline: none;
-            width: 250px;
-            transition: 0.3s;
-        }
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(88, 101, 242, 0.3);
-        }
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        button:hover {
-            transform: scale(1.05);
-            background: #4752c4;
-        }
-        .profile-preview {
-            width: 100%;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border-radius: 25px;
-            padding: 40px;
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 50px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .avatar-wrap {
-            position: relative;
-        }
-        .avatar {
-            width: 160px;
-            height: 160px;
-            border-radius: 40px;
-            border: 4px solid var(--primary);
-            object-fit: cover;
-        }
-        .info h2 {
-            margin: 0;
-            font-size: 2.5rem;
-        }
-        .info p {
-            color: rgba(255,255,255,0.6);
-            margin: 5px 0 20px 0;
-        }
-        .badge {
-            background: var(--primary);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-        .shop-section {
-            width: 100%;
-        }
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
-        }
-        .card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            transition: 0.3s;
-        }
-        .card:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: var(--primary);
-        }
-        .card img {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-        }
-        .price {
-            color: var(--accent);
-            font-weight: bold;
-            display: block;
-            margin: 10px 0;
-        }
-    </style>
+    <title>XZM Custom | Tienda de Estilos</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="navbar">XZM CUSTOM</div>
+    <nav class="navbar">
+        <div class="logo">XZM CUSTOM</div>
+        <div class="nav-links">
+            <span id="statusDot" style="color: #27c93f;">● Online</span>
+        </div>
+    </nav>
 
     <div class="container">
-        <div class="search-box">
-            <input type="text" id="userId" placeholder="ID de Usuario Discord">
-            <button onclick="fetchProfile()">Sincronizar</button>
-        </div>
+        <section class="search-section">
+            <h1>Personaliza tu Identidad</h1>
+            <p>Conecta tu cuenta de Discord para acceder a la tienda de estilos exclusivos.</p>
+            <div class="search-box">
+                <input type="text" id="userId" placeholder="Ingresa tu Discord ID">
+                <button class="btn-primary" id="searchBtn">Sincronizar</button>
+            </div>
+        </section>
 
-        <div id="mainContent" style="display: none;">
+        <main id="mainContent" style="display: none;">
             <div class="profile-preview">
                 <div class="avatar-wrap">
-                    <img src="" id="userAvatar" class="avatar">
+                    <img src="" id="userAvatar" class="avatar" alt="Avatar">
                 </div>
                 <div class="info">
-                    <span class="badge">Nivel <span id="userLevel">0</span></span>
-                    <h2 id="userName">Nombre</h2>
-                    <p id="userTag">@usuario</p>
-                    <div class="stats">
-                        <strong id="userXP">0</strong> XP Acumulado
+                    <span class="badge-level">Nivel <span id="userLevel">0</span></span>
+                    <h2 id="userName">Cargando...</h2>
+                    <span class="tag" id="userTag">@usuario</span>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-label">XP Disponible</span>
+                            <span class="stat-value" id="userXP">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Rango Global</span>
+                            <span class="stat-value">#--</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="shop-section">
-                <h3>🛍️ Tienda de Personalización</h3>
+            <section class="shop-section">
+                <h2 style="margin-bottom: 30px; font-size: 2rem;">🛍️ Tienda de Personalización</h2>
                 <div class="shop-grid">
-                    <div class="card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png">
-                        <h4>Contorno Neón</h4>
-                        <span class="price">500 XP</span>
-                        <button onclick="buy('contour_neon', 500)">Canjear</button>
+                    <div class="shop-card">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png" alt="Contorno">
+                        <div class="item-name">Contorno Neón</div>
+                        <span class="item-price">500 XP</span>
+                        <button class="btn-buy">Canjear</button>
                     </div>
-                    <div class="card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png">
-                        <h4>Fondo Espacial</h4>
-                        <span class="price">1500 XP</span>
-                        <button onclick="buy('bg_space', 1500)">Canjear</button>
+                    <div class="shop-card">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png" alt="Fondo">
+                        <div class="item-name">Fondo Espacial</div>
+                        <span class="item-price">1,500 XP</span>
+                        <button class="btn-buy">Canjear</button>
                     </div>
-                    <div class="card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png">
-                        <h4>Acento Dorado</h4>
-                        <span class="price">2000 XP</span>
-                        <button onclick="buy('accent_gold', 2000)">Canjear</button>
+                    <div class="shop-card">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png" alt="Acento">
+                        <div class="item-name">Acento Dorado</div>
+                        <span class="item-price">2,000 XP</span>
+                        <button class="btn-buy">Canjear</button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 
-    <script>
-        const API_URL = "http://localhost:3000/api";
-
-        async function fetchProfile() {
-            const id = document.getElementById('userId').value;
-            if(!id) return;
-
-            try {
-                const res = await fetch(`${API_URL}/user/${id}`);
-                const data = await res.json();
-                
-                if(data.error) throw new Error(data.error);
-
-                document.getElementById('mainContent').style.display = 'block';
-                document.getElementById('userAvatar').src = data.avatar;
-                document.getElementById('userName').innerText = data.globalName || data.username;
-                document.getElementById('userTag').innerText = `@${data.username}`;
-                document.getElementById('userLevel').innerText = data.level;
-                document.getElementById('userXP').innerText = data.xp;
-
-                localStorage.setItem('xzm_user_id', id);
-            } catch (err) {
-                alert("Error: " + err.message);
-            }
-        }
-
-        async function buy(item, price) {
-            const id = localStorage.getItem('xzm_user_id');
-            if(!id) return alert("Primero sincroniza tu perfil");
-
-            // Aquí se llamaría al endpoint POST /api/purchase que crearemos
-            alert(`Solicitando compra de ${item} por ${price} XP...`);
-        }
-
-        // Cargar automáticamente si ya existe ID
-        const savedId = localStorage.getItem('xzm_user_id');
-        if(savedId) {
-            document.getElementById('userId').value = savedId;
-            fetchProfile();
-        }
+    <script type="module">
+        import { init } from './js/ui.js';
+        init();
     </script>
 </body>
 </html>
