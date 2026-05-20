@@ -25,28 +25,40 @@ const ui = {
     themeSelect: document.getElementById('themeSelect'),
     contourSelect: document.getElementById('contourSelect'),
     shopGrid: document.getElementById('shopGrid'),
-    inventoryNotice: document.getElementById('inventoryNotice')
+    connectionStatus: document.getElementById('connectionStatus')
 };
 
-// Animación de entrada suave
-function animateIn(element) {
-    element.style.opacity = '0';
-    element.style.transform = 'translateY(20px)';
-    element.offsetHeight; // Trigger reflow
-    element.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-    element.style.opacity = '1';
-    element.style.transform = 'translateY(0)';
-}
-
-// Animación de salida suave
-function animateOut(element, callback) {
-    element.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-    element.style.opacity = '0';
-    element.style.transform = 'translateY(-10px)';
-    setTimeout(callback, 300);
+async function checkConnection() {
+    const statusDot = ui.connectionStatus.querySelector('.status-dot');
+    const statusText = ui.connectionStatus.querySelector('.status-text');
+    
+    try {
+        const { resolveApiBase } = await import('./api.js');
+        const apiBase = await resolveApiBase();
+        const response = await fetch(`${apiBase}/health`, { 
+            headers: { "bypass-tunnel-reminder": "true" }
+        });
+        
+        if (response.ok) {
+            ui.connectionStatus.classList.remove('offline');
+            ui.connectionStatus.classList.add('online');
+            statusText.innerText = 'Online';
+            return true;
+        }
+    } catch (e) {
+        console.warn("Health check failed");
+    }
+    
+    ui.connectionStatus.classList.remove('online');
+    ui.connectionStatus.classList.add('offline');
+    statusText.innerText = 'Offline';
+    return false;
 }
 
 export function init() {
+    checkConnection();
+    setInterval(checkConnection, 30000); // Re-chequear cada 30s
+    
     ui.searchBtn.addEventListener('click', handleSearch);
     ui.userIdInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -130,7 +142,12 @@ async function handleSearch(isToken = false) {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert(error.message);
+        
+        let message = error.message;
+        if (message.includes("Failed to fetch")) {
+            message = "No se pudo conectar con el bot. Verifica que el túnel esté activo o pega la URL pública en Ajustes.";
+        }
+        alert(message);
         
         // Animar salida del contenido en caso de error
         if (ui.mainContent.style.display !== 'none') {

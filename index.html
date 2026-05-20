@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
     <title>XZM Store</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +29,13 @@
         <!-- MAIN CONTENT -->
         <main class="main">
             <header>
-                <h1>Personalización</h1>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h1>Personalización</h1>
+                    <div id="connectionStatus" class="status-indicator offline" title="Estado de conexión">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Desconectado</span>
+                    </div>
+                </div>
                 <div class="sync-box">
                     <input type="text" id="userId" placeholder="ID o Token..." autocomplete="off">
                     <button class="btn-sync" id="searchBtn">Sincronizar</button>

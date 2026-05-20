@@ -1,6 +1,6 @@
 const KNOWN_API_BASES = [
-    "https://young-mouse-26.loca.lt/api",
-    "https://xzm-api-store.loca.lt/api"
+    "https://xzm-api-store.loca.lt/api",
+    "https://young-mouse-26.loca.lt/api"
 ];
 
 const headers = {
@@ -19,22 +19,29 @@ export function normalizeApiBase(value) {
 }
 
 export function getSavedApiBase() {
-    return window.API_BASE || localStorage.getItem("xzm_api_base");
+    return localStorage.getItem("xzm_api_base");
 }
 
 export async function resolveApiBase() {
     const saved = getSavedApiBase();
-    if (saved) return saved;
+    if (saved) {
+        try {
+            const response = await fetch(`${saved}/health`, { method: 'GET', headers });
+            if (response.ok) return saved;
+        } catch (e) {
+            console.warn("Saved API failed, trying candidates...");
+        }
+    }
 
     for (const candidate of KNOWN_API_BASES) {
         try {
-            const response = await fetch(`${candidate}/shop`, { method: 'GET', headers });
+            const response = await fetch(`${candidate}/health`, { method: 'GET', headers });
             if (response.ok) {
                 localStorage.setItem("xzm_api_base", candidate);
                 return candidate;
             }
         } catch (error) {
-            // Intentaremos con la siguiente URL
+            // Siguiente candidato
         }
     }
 
