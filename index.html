@@ -2,42 +2,60 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="XZM Custom">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="description" content="Personaliza tu identidad en Discord con estilos exclusivos. Conecta tu cuenta y accede a la tienda de personalización.">
     <title>XZM Custom | Tienda de Estilos</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">XZM CUSTOM</div>
+    <!-- NAVBAR -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="logo">XZM</div>
         <div class="nav-links">
-            <span id="statusDot" style="color: #27c93f;">● Online</span>
+            <span id="statusDot" aria-live="polite">● Online</span>
         </div>
     </nav>
 
+    <!-- MAIN CONTAINER -->
     <div class="container">
-        <section class="search-section">
+        <!-- SEARCH SECTION -->
+        <section class="search-section" role="region" aria-label="Sincronización de perfil">
             <h1>Personaliza tu Identidad</h1>
             <p>Conecta tu cuenta de Discord para acceder a la tienda de estilos exclusivos.</p>
             <div class="search-box">
-                <input type="text" id="userId" placeholder="Ingresa tu Discord ID">
-                <button class="btn-primary" id="searchBtn">Sincronizar</button>
+                <input 
+                    type="text" 
+                    id="userId" 
+                    placeholder="Ingresa tu Discord ID" 
+                    aria-label="ID de Discord"
+                    autocomplete="off"
+                >
+                <button class="btn-primary" id="searchBtn" aria-label="Sincronizar perfil">
+                    Sincronizar
+                </button>
             </div>
         </section>
 
-        <main id="mainContent" style="display: none;">
-            <div class="profile-preview">
+        <!-- MAIN CONTENT -->
+        <main id="mainContent" style="display: none;" role="main">
+            <!-- PROFILE PREVIEW -->
+            <section class="profile-preview" role="region" aria-label="Vista previa del perfil">
                 <div class="avatar-wrap">
-                    <img src="" id="userAvatar" class="avatar" alt="Avatar">
+                    <img src="" id="userAvatar" class="avatar" alt="Avatar del usuario">
                 </div>
                 <div class="info">
                     <span class="badge-level">Nivel <span id="userLevel">0</span></span>
                     <h2 id="userName">Cargando...</h2>
                     <span class="tag" id="userTag">@usuario</span>
                     
-                    <div class="stats-grid">
+                    <div class="stats-grid" role="region" aria-label="Estadísticas del usuario">
                         <div class="stat-card">
                             <span class="stat-label">XP Disponible</span>
                             <span class="stat-value" id="userXP">0</span>
@@ -48,55 +66,57 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="shop-section">
-                <h2 style="margin-bottom: 30px; font-size: 2rem;">🛍️ Tienda de Personalización</h2>
-                <div class="shop-grid">
+            <!-- SHOP SECTION -->
+            <section class="shop-section" role="region" aria-label="Tienda de personalización">
+                <h2>🛍️ Tienda de Personalización</h2>
+                <div class="shop-grid" role="list">
                     <!-- COMMON -->
-                    <div class="shop-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png" alt="Contorno">
+                    <article class="shop-card" role="listitem">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png" alt="Icono Panel Windows">
                         <div class="item-name">Panel Windows</div>
                         <span class="badge" style="background: #ccc; color: black;">Common</span>
                         <span class="item-price">2,500 XP</span>
-                        <p style="font-size: 0.8rem; color: #aaa;">Requisito: Nivel 5</p>
-                        <button class="btn-buy" onclick="buyItem('windows', 'themes')">Comprar</button>
-                    </div>
+                        <p>Requisito: Nivel 5</p>
+                        <button class="btn-buy" onclick="buyItem('windows', 'themes')" aria-label="Comprar Panel Windows">Comprar</button>
+                    </article>
 
                     <!-- RARE -->
-                    <div class="shop-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png" alt="Fondo">
+                    <article class="shop-card" role="listitem">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png" alt="Icono Contorno Neón">
                         <div class="item-name">Contorno Neón</div>
                         <span class="badge" style="background: #00f2ff; color: black;">Rare</span>
                         <span class="item-price">5,000 XP</span>
-                        <p style="font-size: 0.8rem; color: #aaa;">Requisito: Nivel 10</p>
-                        <button class="btn-buy" onclick="buyItem('neon', 'contours')">Comprar</button>
-                    </div>
+                        <p>Requisito: Nivel 10</p>
+                        <button class="btn-buy" onclick="buyItem('neon', 'contours')" aria-label="Comprar Contorno Neón">Comprar</button>
+                    </article>
 
                     <!-- EXECUTIVE -->
-                    <div class="shop-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png" alt="Acento">
+                    <article class="shop-card" role="listitem">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png" alt="Icono Contorno Dorado">
                         <div class="item-name">Contorno Dorado</div>
                         <span class="badge" style="background: #ffd700; color: black;">Executive</span>
                         <span class="item-price">15,000 XP</span>
-                        <p style="font-size: 0.8rem; color: #aaa;">Requisito: Nivel 25</p>
-                        <button class="btn-buy" onclick="buyItem('gold', 'contours')">Comprar</button>
-                    </div>
+                        <p>Requisito: Nivel 25</p>
+                        <button class="btn-buy" onclick="buyItem('gold', 'contours')" aria-label="Comprar Contorno Dorado">Comprar</button>
+                    </article>
 
                     <!-- EXCLUSIVE -->
-                    <div class="shop-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1458/1458567.png" alt="Acento">
+                    <article class="shop-card" role="listitem">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1458/1458567.png" alt="Icono Contorno RGB">
                         <div class="item-name">Contorno RGB</div>
                         <span class="badge" style="background: linear-gradient(45deg, red, blue); color: white;">Exclusive</span>
                         <span class="item-price">50,000 XP</span>
-                        <p style="font-size: 0.8rem; color: #aaa;">Requisito: Nivel 50</p>
-                        <button class="btn-buy" onclick="buyItem('chroma', 'contours')">Comprar</button>
-                    </div>
+                        <p>Requisito: Nivel 50</p>
+                        <button class="btn-buy" onclick="buyItem('chroma', 'contours')" aria-label="Comprar Contorno RGB">Comprar</button>
+                    </article>
                 </div>
-            </div>
+            </section>
         </main>
     </div>
 
+    <!-- SCRIPTS -->
     <script type="module">
         import { init } from './js/ui.js';
         import { purchaseItem } from './js/api.js';
@@ -120,5 +140,5 @@
 
         init();
     </script>
-            </body>
+</body>
 </html>

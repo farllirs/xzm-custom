@@ -11,8 +11,35 @@ const ui = {
     xp: document.getElementById('userXP'),
     loader: document.getElementById('loader')
 };
+
+// Animación de entrada suave
+function animateIn(element) {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(20px)';
+    element.offsetHeight; // Trigger reflow
+    element.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+    element.style.opacity = '1';
+    element.style.transform = 'translateY(0)';
+}
+
+// Animación de salida suave
+function animateOut(element, callback) {
+    element.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(-10px)';
+    setTimeout(callback, 300);
+}
+
 export function init() {
     ui.searchBtn.addEventListener('click', handleSearch);
+    ui.userIdInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    });
+
+    // Agregar ripple effect al botón
+    ui.searchBtn.addEventListener('mousedown', createRipple);
 
     // 1. Prioridad: Detectar token en la URL (Link desde Discord)
     const urlParams = new URLSearchParams(window.location.search);
@@ -31,6 +58,16 @@ export function init() {
             handleSearch();
         }
     }
+
+    // Detectar preferencia de modo oscuro/claro
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.documentElement.style.colorScheme = 'light';
+    }
+
+    // Escuchar cambios en preferencia de tema
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+        document.documentElement.style.colorScheme = e.matches ? 'light' : 'dark';
+    });
 }
 
 async function handleSearch(isToken = false) {
@@ -40,7 +77,19 @@ async function handleSearch(isToken = false) {
     setLoading(true);
     try {
         const data = await getUserProfile(input);
-        updateProfileUI(data);
+        
+        // Animar salida del contenido anterior si existe
+        if (ui.mainContent.style.display !== 'none') {
+            animateOut(ui.mainContent, () => {
+                updateProfileUI(data);
+                ui.mainContent.style.display = 'block';
+                animateIn(ui.mainContent);
+            });
+        } else {
+            updateProfileUI(data);
+            ui.mainContent.style.display = 'block';
+            animateIn(ui.mainContent);
+        }
 
         // Guardar solo si es un ID real (no un token temporal)
         if (!isToken && input.length > 15) {
@@ -49,26 +98,120 @@ async function handleSearch(isToken = false) {
             // Guardar el ID real devuelto por la API para futuras compras
             localStorage.setItem('xzm_user_id', data.id);
         }
-
-        ui.mainContent.style.display = 'block';
     } catch (error) {
-...
+        console.error('Error:', error);
         alert(error.message);
-        ui.mainContent.style.display = 'none';
+        
+        // Animar salida del contenido en caso de error
+        if (ui.mainContent.style.display !== 'none') {
+            animateOut(ui.mainContent, () => {
+                ui.mainContent.style.display = 'none';
+            });
+        }
     } finally {
         setLoading(false);
     }
 }
 
 function updateProfileUI(data) {
+    // Animar avatar
+    ui.avatar.style.opacity = '0';
+    ui.avatar.style.transform = 'scale(0.9)';
+    
     ui.avatar.src = data.avatar;
-    ui.name.innerText = data.globalName || data.username;
-    ui.tag.innerText = `@${data.username}`;
-    ui.level.innerText = data.level;
-    ui.xp.innerText = data.xp.toLocaleString();
+    ui.avatar.onload = () => {
+        ui.avatar.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        ui.avatar.style.opacity = '1';
+        ui.avatar.style.transform = 'scale(1)';
+    };
+
+    // Animar nombre
+    ui.name.style.opacity = '0';
+    ui.name.style.transform = 'translateX(-10px)';
+    setTimeout(() => {
+        ui.name.innerText = data.globalName || data.username;
+        ui.name.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        ui.name.style.opacity = '1';
+        ui.name.style.transform = 'translateX(0)';
+    }, 100);
+
+    // Animar tag
+    ui.tag.style.opacity = '0';
+    setTimeout(() => {
+        ui.tag.innerText = `@${data.username}`;
+        ui.tag.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        ui.tag.style.opacity = '1';
+    }, 150);
+
+    // Animar nivel
+    ui.level.style.opacity = '0';
+    setTimeout(() => {
+        ui.level.innerText = data.level;
+        ui.level.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        ui.level.style.opacity = '1';
+    }, 200);
+
+    // Animar XP con contador
+    animateCounter(ui.xp, parseInt(data.xp));
+}
+
+function animateCounter(element, finalValue) {
+    const duration = 1000;
+    const startTime = Date.now();
+    const startValue = 0;
+
+    element.style.opacity = '0';
+    setTimeout(() => {
+        element.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        element.style.opacity = '1';
+    }, 250);
+
+    function update() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const currentValue = Math.floor(startValue + (finalValue - startValue) * progress);
+        element.innerText = currentValue.toLocaleString();
+
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+
+    update();
 }
 
 function setLoading(isLoading) {
     ui.searchBtn.disabled = isLoading;
-    ui.searchBtn.innerText = isLoading ? "Sincronizando..." : "Sincronizar";
+    
+    if (isLoading) {
+        ui.searchBtn.style.opacity = '0.7';
+        ui.searchBtn.innerText = "Sincronizando...";
+        ui.searchBtn.style.pointerEvents = 'none';
+    } else {
+        ui.searchBtn.style.opacity = '1';
+        ui.searchBtn.innerText = "Sincronizar";
+        ui.searchBtn.style.pointerEvents = 'auto';
+    }
+}
+
+// Efecto ripple para botones
+function createRipple(event) {
+    const button = event.currentTarget;
+    const ripple = document.createElement('span');
+    
+    const rect = button.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripple.classList.add('ripple');
+
+    // Limpiar ripples anteriores
+    const ripples = button.querySelectorAll('.ripple');
+    ripples.forEach(r => r.remove());
+
+    button.appendChild(ripple);
 }
