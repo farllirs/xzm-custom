@@ -1,4 +1,5 @@
 import { getUserProfile, getSavedApiBase, setApiBase, updateUserProfile, getShopItems, purchaseItem, equipItem, getPanelUrl, generateTempPanel, getTempImageUrl } from './api.js';
+import { renderLocalPreview } from './canvas-engine.js';
 
 const ui = {
     searchBtn: document.getElementById('searchBtn'),
@@ -18,6 +19,7 @@ const ui = {
     activeTheme: document.getElementById('activeTheme'),
     activeContour: document.getElementById('activeContour'),
     panelPreview: document.getElementById('profilePanelPreview'),
+    settingsPanelPreview: document.getElementById('settingsPanelPreview'),
     descriptionInput: document.getElementById('profileDescription'),
     accentColorInput: document.getElementById('accentColor'),
     backgroundUrlInput: document.getElementById('backgroundUrl'),
@@ -25,8 +27,12 @@ const ui = {
     themeSelect: document.getElementById('themeSelect'),
     contourSelect: document.getElementById('contourSelect'),
     shopGrid: document.getElementById('shopGrid'),
-    connectionStatus: document.getElementById('connectionStatus')
+    connectionStatus: document.getElementById('connectionStatus'),
+    tunnelWarning: document.getElementById('tunnelWarning'),
+    tunnelLink: document.getElementById('tunnelLink')
 };
+
+let currentProfileData = null;
 
 async function checkConnection() {
     const statusDot = ui.connectionStatus.querySelector('.status-dot');
@@ -43,6 +49,7 @@ async function checkConnection() {
             ui.connectionStatus.classList.remove('offline');
             ui.connectionStatus.classList.add('online');
             statusText.innerText = 'Online';
+            ui.tunnelWarning.style.display = 'none';
             return true;
         }
     } catch (e) {
@@ -52,6 +59,13 @@ async function checkConnection() {
     ui.connectionStatus.classList.remove('online');
     ui.connectionStatus.classList.add('offline');
     statusText.innerText = 'Offline';
+
+    const { getApiBase } = await import('./api.js');
+    const base = getApiBase();
+    if (base && base.includes('loca.lt')) {
+        ui.tunnelLink.href = base.replace('/api', '');
+        ui.tunnelWarning.style.display = 'block';
+    }
     return false;
 }
 
@@ -177,7 +191,7 @@ function showTab(target) {
 }
 
 async function handleSaveProfile() {
-    const userId = ui.userIdInput.value.trim();
+    const userId = localStorage.getItem('xzm_user_id');
     if (!userId) return alert("Sincroniza tu perfil antes de guardar cambios.");
 
     const changes = {
@@ -192,13 +206,35 @@ async function handleSaveProfile() {
         const result = await updateUserProfile(userId, changes);
         if (result.error) throw new Error(result.error);
         updateProfileUI(result);
-        setPanelPreview(result.id);
         alert("Perfil actualizado correctamente.");
     } catch (error) {
         console.error('Update Error:', error);
         alert(error.message || 'No se pudo actualizar el perfil.');
     }
 }
+
+function updateLivePreview() {
+    if (!currentProfileData) return;
+    
+    const previewData = {
+        ...currentProfileData,
+        customization: {
+            description: ui.descriptionInput.value.trim(),
+            accentColor: ui.accentColorInput.value.trim() || 'auto',
+            backgroundUrl: ui.backgroundUrlInput.value.trim() || 'default-1'
+        },
+        activeTheme: ui.themeSelect.value,
+        activeContour: ui.contourSelect.value
+    };
+    
+    renderLocalPreview(ui.settingsPanelPreview, previewData);
+}
+
+// Escuchar cambios en los inputs para live preview
+[ui.descriptionInput, ui.accentColorInput, ui.backgroundUrlInput, ui.themeSelect, ui.contourSelect].forEach(input => {
+    input.addEventListener('input', updateLivePreview);
+    input.addEventListener('change', updateLivePreview);
+});
 
 async function loadShop(userId) {
     try {
@@ -314,24 +350,13 @@ async function handleEquip(userId, itemId, category) {
     }
 }
 
-async function setPanelPreview(userId) {
-    try {
-        const tempData = await generateTempPanel(userId);
-        const tempUrl = getTempImageUrl(tempData.sessionId);
-        ui.panelPreview.src = tempUrl;
-        ui.panelPreview.onerror = () => {
-            console.warn("Imagen temporal expirada, recargando...");
-            setPanelPreview(userId);
-        };
-    } catch (error) {
-        console.error("Error al generar previa temporal:", error);
-        // Fallback a URL directa si falla
-        const panelUrl = await getPanelUrl(userId);
-        ui.panelPreview.src = `${panelUrl}?t=${Date.now()}`;
-    }
+async function setPanelPreview(data) {
+    if (!data) return;
+    renderLocalPreview(ui.panelPreview, data);
 }
 
 function updateProfileUI(data) {
+    currentProfileData = data;
     // Animar avatar
     ui.avatar.style.opacity = '0';
     ui.avatar.style.transform = 'scale(0.9)';
@@ -381,7 +406,8 @@ function updateProfileUI(data) {
     ui.themeSelect.value = data.activeTheme || 'macos';
     ui.contourSelect.value = data.activeContour || 'none';
 
-    setPanelPreview(data.id);
+    setPanelPreview(data);
+    updateLivePreview();
     loadShop(data.id);
 }
 

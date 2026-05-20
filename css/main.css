@@ -1,3 +1,13 @@
+@font-face {
+    font-family: 'Bungee';
+    src: url('../assets/fonts/Bungee-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'ConcertOne';
+    src: url('../assets/fonts/ConcertOne-Regular.ttf') format('truetype');
+}
+
 :root {
     --primary: #007aff;
     --bg: #000000;

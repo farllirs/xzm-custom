@@ -46,6 +46,9 @@
                         <button class="btn-sync" id="saveApiBtn">Guardar API</button>
                     </div>
                     <small style="color: #ccc; font-size: 0.8rem; max-width: 560px;">Si la página dice "failed to fetch", pega aquí la URL pública activa del bot y guarda.</small>
+                    <div id="tunnelWarning" style="display:none; background: rgba(255, 59, 48, 0.1); border: 1px solid #ff3b30; padding: 10px; border-radius: 10px; font-size: 0.8rem;">
+                        ⚠️ <b>Acceso Bloqueado:</b> Si es la primera vez que usas este túnel, haz <a id="tunnelLink" href="#" target="_blank" style="color: #007aff; text-decoration: underline;">clic aquí</a> y pulsa el botón azul <b>"Click to Continue"</b> para activar la conexión.
+                    </div>
                 </div>
             </header>
 
@@ -75,7 +78,7 @@
                         </div>
                         <div class="profile-preview-card">
                             <h2>Vista previa del panel</h2>
-                            <img id="profilePanelPreview" class="panel-preview" src="" alt="Preview del panel">
+                            <canvas id="profilePanelPreview" width="1000" height="500" class="panel-preview"></canvas>
                         </div>
                     </div>
                 </section>
@@ -115,7 +118,7 @@
                             <h2>Panel actual</h2>
                             <p>Tu panel original se muestra en tiempo real. Cambia el fondo, el color o la descripción y guarda para actualizar la vista.</p>
                             <div class="panel-preview-wrapper">
-                                <img class="panel-preview" src="" alt="Vista previa del panel">
+                                <canvas id="settingsPanelPreview" width="1000" height="500" class="panel-preview"></canvas>
                             </div>
                         </div>
                     </div>

@@ -59,11 +59,18 @@ export function setApiBase(value) {
 export async function getUserProfile(userId) {
     const API_BASE = await resolveApiBase();
     try {
-        const response = await fetch(`${API_BASE}/user/${userId}`, { headers });
-        const contentType = response.headers.get("content-type");
+        const response = await fetch(`${API_BASE}/user/${userId}`, { 
+            headers,
+            mode: 'cors' 
+        });
         
+        if (response.status === 401) {
+             throw new Error("Sesión expirada. Usa el botón 'Tienda Web' en Discord de nuevo.");
+        }
+
+        const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            throw new Error("La API no devolvió JSON. Verifica la URL o el túnel activo.");
+            throw new Error("La API no respondió correctamente. Verifica el túnel.");
         }
 
         if (!response.ok) {
