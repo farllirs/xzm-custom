@@ -53,51 +53,72 @@
             <div class="shop-section">
                 <h2 style="margin-bottom: 30px; font-size: 2rem;">🛍️ Tienda de Personalización</h2>
                 <div class="shop-grid">
+                    <!-- COMMON -->
                     <div class="shop-card">
                         <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png" alt="Contorno">
-                        <div class="item-name">Contorno Neón</div>
-                        <span class="item-price">500 XP</span>
-                        <button class="btn-buy" onclick="buyItem('neon', 500, 'contour')">Canjear</button>
+                        <div class="item-name">Panel Windows</div>
+                        <span class="badge" style="background: #ccc; color: black;">Common</span>
+                        <span class="item-price">2,500 XP</span>
+                        <p style="font-size: 0.8rem; color: #aaa;">Requisito: Nivel 5</p>
+                        <button class="btn-buy" onclick="buyItem('windows', 'themes')">Comprar</button>
                     </div>
+
+                    <!-- RARE -->
                     <div class="shop-card">
                         <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png" alt="Fondo">
-                        <div class="item-name">Panel Windows</div>
-                        <span class="item-price">1,500 XP</span>
-                        <button class="btn-buy" onclick="buyItem('windows', 1500, 'theme')">Canjear</button>
+                        <div class="item-name">Contorno Neón</div>
+                        <span class="badge" style="background: #00f2ff; color: black;">Rare</span>
+                        <span class="item-price">5,000 XP</span>
+                        <p style="font-size: 0.8rem; color: #aaa;">Requisito: Nivel 10</p>
+                        <button class="btn-buy" onclick="buyItem('neon', 'contours')">Comprar</button>
                     </div>
+
+                    <!-- EXECUTIVE -->
                     <div class="shop-card">
                         <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png" alt="Acento">
                         <div class="item-name">Contorno Dorado</div>
-                        <span class="item-price">2,000 XP</span>
-                        <button class="btn-buy" onclick="buyItem('gold', 2000, 'contour')">Canjear</button>
+                        <span class="badge" style="background: #ffd700; color: black;">Executive</span>
+                        <span class="item-price">15,000 XP</span>
+                        <p style="font-size: 0.8rem; color: #aaa;">Requisito: Nivel 25</p>
+                        <button class="btn-buy" onclick="buyItem('gold', 'contours')">Comprar</button>
+                    </div>
+
+                    <!-- EXCLUSIVE -->
+                    <div class="shop-card">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1458/1458567.png" alt="Acento">
+                        <div class="item-name">Contorno RGB</div>
+                        <span class="badge" style="background: linear-gradient(45deg, red, blue); color: white;">Exclusive</span>
+                        <span class="item-price">50,000 XP</span>
+                        <p style="font-size: 0.8rem; color: #aaa;">Requisito: Nivel 50</p>
+                        <button class="btn-buy" onclick="buyItem('chroma', 'contours')">Comprar</button>
                     </div>
                 </div>
             </div>
-            </main>
-            </div>
+        </main>
+    </div>
 
-            <script type="module">
-            import { init } from './js/ui.js';
-            import { purchaseItem } from './js/api.js';
+    <script type="module">
+        import { init } from './js/ui.js';
+        import { purchaseItem } from './js/api.js';
 
-            window.buyItem = async (itemId, price, type) => {
+        window.buyItem = async (itemId, category) => {
             const userId = localStorage.getItem('xzm_user_id');
             if(!userId) return alert("Primero sincroniza tu perfil");
 
-            if(!confirm(`¿Deseas canjear "${itemId}" por ${price} XP?`)) return;
+            if(!confirm(`¿Deseas comprar este item? Se validará tu nivel y XP.`)) return;
 
             try {
-                const data = await purchaseItem(userId, itemId, price, type);
+                const data = await purchaseItem(userId, itemId, category);
                 if(data.error) throw new Error(data.error);
 
-                alert("¡Compra realizada con éxito! Tu perfil ha sido actualizado.");
-                location.reload(); // Recargar para ver el nuevo XP y estilos
+                alert("¡Compra realizada con éxito! Reclama tu estilo en Discord.");
+                location.reload(); 
             } catch (err) {
                 alert("Error: " + err.message);
             }
-            };
+        };
 
-            init();
-            </script>
+        init();
+    </script>
             </body>
 </html>

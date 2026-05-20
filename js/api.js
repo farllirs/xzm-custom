@@ -16,14 +16,14 @@ export async function getUserProfile(userId) {
     }
 }
 
-export async function purchaseItem(userId, itemId, price, type) {
+export async function purchaseItem(userId, itemId, category) {
     try {
         const response = await fetch(`${API_BASE}/purchase`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ userId, itemId, price, type })
+            body: JSON.stringify({ userId, itemId, category })
         });
         return await response.json();
     } catch (error) {
