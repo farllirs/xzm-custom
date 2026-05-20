@@ -1,4 +1,4 @@
-import { getUserProfile, getSavedApiBase, setApiBase, updateUserProfile, getShopItems, purchaseItem, equipItem, getPanelUrl } from './api.js';
+import { getUserProfile, getSavedApiBase, setApiBase, updateUserProfile, getShopItems, purchaseItem, equipItem, getPanelUrl, generateTempPanel, getTempImageUrl } from './api.js';
 
 const ui = {
     searchBtn: document.getElementById('searchBtn'),
@@ -199,37 +199,69 @@ function renderShop(shop, profileData) {
     const activeTheme = profileData.activeTheme;
     const activeContour = profileData.activeContour;
 
-    const renderItems = (category, items) => Object.entries(items).map(([key, item]) => {
-        const owned = category === 'themes' ? inventory.themes.includes(key) : inventory.contours.includes(key);
-        const equipped = category === 'themes' ? activeTheme === key : activeContour === key;
-        return `
-            <div class="item-card">
-                <div class="item-icon-placeholder"></div>
-                <div class="item-name">${item.name}</div>
-                <span class="rarity">${item.rarity}</span>
-                <span class="item-price">${item.price.toLocaleString()} XP</span>
-                <div class="item-actions">
-                    ${owned ? (equipped ? `<button class="btn-buy disabled" disabled>Equipado</button>` : `<button class="btn-buy" data-category="${category}" data-item="${key}">Equipar</button>`) : `<button class="btn-buy" data-category="${category}" data-item="${key}">Comprar</button>`}
+    const renderItems = (category, items) => {
+        const ownedItems = [];
+        const notOwnedItems = [];
+
+        Object.entries(items).forEach(([key, item]) => {
+            const owned = category === 'themes' ? inventory.themes.includes(key) : inventory.contours.includes(key);
+            const equipped = category === 'themes' ? activeTheme === key : activeContour === key;
+            const html = `
+                <div class="item-card ${owned ? 'owned' : 'not-owned'} ${equipped ? 'equipped' : ''}">
+                    <div class="item-icon-placeholder"></div>
+                    <div class="item-name">${item.name}</div>
+                    <span class="rarity">${item.rarity}</span>
+                    <span class="item-price">${item.price.toLocaleString()} XP</span>
+                    <div class="item-actions">
+                        ${owned ? (equipped ? `<button class="btn-buy disabled" disabled>✓ Equipado</button>` : `<button class="btn-buy" data-category="${category}" data-item="${key}">Equipar</button>`) : `<button class="btn-buy" data-category="${category}" data-item="${key}">Comprar</button>`}
+                    </div>
                 </div>
-            </div>
-        `;
-    }).join('');
+            `;
+            if (owned) {
+                ownedItems.push(html);
+            } else {
+                notOwnedItems.push(html);
+            }
+        });
+
+        return { ownedItems, notOwnedItems };
+    };
+
+    const themesData = renderItems('themes', shop.themes);
+    const contoursData = renderItems('contours', shop.contours);
 
     ui.shopGrid.innerHTML = `
-        <div class="shop-section-title">Temas</div>
-        ${renderItems('themes', shop.themes)}
-        <div class="shop-section-title">Contornos</div>
-        ${renderItems('contours', shop.contours)}
+        <div class="shop-section">
+            <div class="shop-section-title">🎨 Temas disponibles</div>
+            <div class="shop-items-grid">
+                ${themesData.ownedItems.length > 0 ? `<div class="shop-subsection"><span class="subsection-label">✓ Tuyos</span>${themesData.ownedItems.join('')}</div>` : ''}
+                ${notOwnedItems.length > 0 ? `<div class="shop-subsection"><span class="subsection-label">+ Comprar</span>${themesData.notOwnedItems.join('')}</div>` : ''}
+            </div>
+        </div>
+        <div class="shop-section">
+            <div class="shop-section-title">✨ Contornos disponibles</div>
+            <div class="shop-items-grid">
+                ${contoursData.ownedItems.length > 0 ? `<div class="shop-subsection"><span class="subsection-label">✓ Tuyos</span>${contoursData.ownedItems.join('')}</div>` : ''}
+                ${contoursData.notOwnedItems.length > 0 ? `<div class="shop-subsection"><span class="subsection-label">+ Comprar</span>${contoursData.notOwnedItems.join('')}</div>` : ''}
+            </div>
+        </div>
     `;
 
     ui.shopGrid.querySelectorAll('.btn-buy').forEach(btn => {
         btn.addEventListener('click', async () => {
             const category = btn.dataset.category;
             const itemId = btn.dataset.item;
-            if (btn.innerText === 'Comprar') {
-                await handlePurchase(profileData.id, itemId, category);
-            } else {
-                await handleEquip(profileData.id, itemId, category);
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            try {
+                if (btn.innerText.includes('Comprar')) {
+                    await handlePurchase(profileData.id, itemId, category);
+                } else {
+                    await handleEquip(profileData.id, itemId, category);
+                }
+            } finally {
+                btn.disabled = false;
+                btn.style.opacity = '1';
             }
         });
     });
@@ -266,8 +298,20 @@ async function handleEquip(userId, itemId, category) {
 }
 
 async function setPanelPreview(userId) {
-    const panelUrl = await getPanelUrl(userId);
-    ui.panelPreview.src = `${panelUrl}?t=${Date.now()}`;
+    try {
+        const tempData = await generateTempPanel(userId);
+        const tempUrl = getTempImageUrl(tempData.sessionId);
+        ui.panelPreview.src = tempUrl;
+        ui.panelPreview.onerror = () => {
+            console.warn("Imagen temporal expirada, recargando...");
+            setPanelPreview(userId);
+        };
+    } catch (error) {
+        console.error("Error al generar previa temporal:", error);
+        // Fallback a URL directa si falla
+        const panelUrl = await getPanelUrl(userId);
+        ui.panelPreview.src = `${panelUrl}?t=${Date.now()}`;
+    }
 }
 
 function updateProfileUI(data) {

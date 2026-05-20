@@ -130,3 +130,23 @@ export async function getPanelUrl(userId) {
     const API_BASE = await resolveApiBase();
     return `${API_BASE}/user/${userId}/panel`;
 }
+
+export async function generateTempPanel(userId) {
+    const API_BASE = await resolveApiBase();
+    try {
+        const response = await fetch(`${API_BASE}/user/${userId}/panel-temp`, {
+            method: 'POST',
+            headers: headers
+        });
+        if (!response.ok) throw new Error("No se pudo generar la previa");
+        const data = await response.json();
+        return data; // { sessionId, expiresIn }
+    } catch (error) {
+        console.error("Temp Panel Error:", error);
+        throw error;
+    }
+}
+
+export function getTempImageUrl(sessionId) {
+    return `${getApiBase()}/temp-image/${sessionId}`;
+}
