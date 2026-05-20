@@ -19,9 +19,9 @@
             </div>
 
             <nav class="nav-links">
-                <button class="nav-item active">🛒 Tienda</button>
-                <button class="nav-item">👤 Perfil</button>
-                <button class="nav-item">⚙️ Ajustes</button>
+                <button class="nav-item active" data-target="storeTab">🛒 Tienda</button>
+                <button class="nav-item" data-target="profileTab">👤 Perfil</button>
+                <button class="nav-item" data-target="settingsTab">⚙️ Ajustes</button>
             </nav>
         </aside>
 
@@ -33,63 +33,93 @@
                     <input type="text" id="userId" placeholder="ID o Token..." autocomplete="off">
                     <button class="btn-sync" id="searchBtn">Sincronizar</button>
                 </div>
+                <div class="sync-box" style="margin-top: 10px; gap: 10px; flex-direction: column; align-items: flex-start;">
+                    <div style="display:flex; gap:10px; width:100%;">
+                        <input type="text" id="apiBase" placeholder="API pública (ej. https://young-mouse-26.loca.lt/api)" autocomplete="off">
+                        <button class="btn-sync" id="saveApiBtn">Guardar API</button>
+                    </div>
+                    <small style="color: #ccc; font-size: 0.8rem; max-width: 560px;">Si la página dice "failed to fetch", pega aquí la URL pública activa del bot y guarda.</small>
+                </div>
             </header>
 
             <div id="mainContent" style="display: none;">
-                <!-- USER SECTION -->
-                <section class="profile-section">
-                    <div class="profile-card">
-                        <img src="" id="userAvatar" class="avatar" alt="Avatar">
-                        <div class="user-info">
-                            <h2 id="userName">Cargando...</h2>
-                            <p class="user-tag" id="userTag">@usuario</p>
-                            <div class="stats">
-                                <div class="stat-item">
-                                    <span class="label">Nivel</span>
-                                    <span class="value" id="userLevel">0</span>
+                <section id="profileTab" class="panel-section">
+                    <div class="profile-card profile-grid">
+                        <div class="profile-card-main">
+                            <img src="" id="userAvatar" class="avatar" alt="Avatar">
+                            <div class="user-info">
+                                <h2 id="userName">Cargando...</h2>
+                                <p class="user-tag" id="userTag">@usuario</p>
+                                <div class="stats">
+                                    <div class="stat-item">
+                                        <span class="label">Nivel</span>
+                                        <span class="value" id="userLevel">0</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="label">XP</span>
+                                        <span class="value" id="userXP">0</span>
+                                    </div>
                                 </div>
-                                <div class="stat-item">
-                                    <span class="label">XP</span>
-                                    <span class="value" id="userXP">0</span>
+                                <div class="profile-metadata">
+                                    <div class="meta-item"><span class="label">Tema activo</span><span class="meta-value" id="activeTheme">macos</span></div>
+                                    <div class="meta-item"><span class="label">Contorno</span><span class="meta-value" id="activeContour">none</span></div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="profile-preview-card">
+                            <h2>Vista previa del panel</h2>
+                            <img id="profilePanelPreview" class="panel-preview" src="" alt="Preview del panel">
+                        </div>
+                    </div>
+                </section>
+
+                <section id="settingsTab" class="panel-section" style="display: none;">
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <h2>Configuración de perfil</h2>
+                            <label>Descripción</label>
+                            <textarea id="profileDescription" rows="4" placeholder="Escribe tu descripción..."></textarea>
+
+                            <label>Color de acento</label>
+                            <input type="text" id="accentColor" placeholder="auto o #ff00aa">
+
+                            <label>URL de fondo</label>
+                            <input type="text" id="backgroundUrl" placeholder="https://...">
+
+                            <label>Tema activo</label>
+                            <select id="themeSelect">
+                                <option value="macos">Mac Glass</option>
+                                <option value="windows">Windows Classic</option>
+                                <option value="retro">Retro Terminal</option>
+                                <option value="executive">Executive Suite</option>
+                            </select>
+
+                            <label>Contorno activo</label>
+                            <select id="contourSelect">
+                                <option value="none">Sin contorno</option>
+                                <option value="neon">Neon Glow</option>
+                                <option value="gold">Gold Plated</option>
+                                <option value="chroma">RGB Chroma</option>
+                            </select>
+
+                            <button class="btn-sync" id="saveProfileBtn">Guardar cambios</button>
+                        </div>
+                        <div class="settings-card">
+                            <h2>Panel actual</h2>
+                            <p>Tu panel original se muestra en tiempo real. Cambia el fondo, el color o la descripción y guarda para actualizar la vista.</p>
+                            <div class="panel-preview-wrapper">
+                                <img class="panel-preview" src="" alt="Vista previa del panel">
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- SHOP SECTION -->
-                <section class="shop-grid">
-                    <div class="item-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1164/1164620.png" class="item-icon">
-                        <div class="item-name">Windows Classic</div>
-                        <span class="rarity">Common</span>
-                        <span class="item-price">2,500 XP</span>
-                        <button class="btn-buy" onclick="buyItem('windows', 'themes')">Canjear</button>
+                <section id="storeTab" class="panel-section" style="display: block;">
+                    <div class="store-header">
+                        <h2>Catálogo de estilos</h2>
+                        <p>Compra temas y contornos con XP, o equipa los que ya tengas.</p>
                     </div>
-
-                    <div class="item-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1043/1043445.png" class="item-icon">
-                        <div class="item-name">Neon Glow</div>
-                        <span class="rarity">Rare</span>
-                        <span class="item-price">5,000 XP</span>
-                        <button class="btn-buy" onclick="buyItem('neon', 'contours')">Canjear</button>
-                    </div>
-
-                    <div class="item-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2906/2906206.png" class="item-icon">
-                        <div class="item-name">Gold Plated</div>
-                        <span class="rarity">Executive</span>
-                        <span class="item-price">15,000 XP</span>
-                        <button class="btn-buy" onclick="buyItem('gold', 'contours')">Canjear</button>
-                    </div>
-
-                    <div class="item-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1458/1458567.png" class="item-icon">
-                        <div class="item-name">RGB Chroma</div>
-                        <span class="rarity">Exclusive</span>
-                        <span class="item-price">50,000 XP</span>
-                        <button class="btn-buy" onclick="buyItem('chroma', 'contours')">Canjear</button>
-                    </div>
+                    <div id="shopGrid" class="shop-grid"></div>
                 </section>
             </div>
         </main>
@@ -97,24 +127,6 @@
 
     <script type="module">
         import { init } from './js/ui.js';
-        import { purchaseItem } from './js/api.js';
-
-        window.buyItem = async (itemId, category) => {
-            const userId = localStorage.getItem('xzm_user_id');
-            if (!userId) return alert("Sincroniza tu perfil primero.");
-
-            if (!confirm(`¿Confirmas el canje de este item?`)) return;
-
-            try {
-                const data = await purchaseItem(userId, itemId, category);
-                if (data.error) throw new Error(data.error);
-                alert("¡Éxito! Estilo añadido a tu inventario.");
-                location.reload();
-            } catch (err) {
-                alert("Error: " + err.message);
-            }
-        };
-
         init();
     </script>
 </body>

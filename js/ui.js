@@ -1,15 +1,31 @@
-import { getUserProfile } from './api.js';
+import { getUserProfile, getSavedApiBase, setApiBase, updateUserProfile, getShopItems, purchaseItem, equipItem, getPanelUrl } from './api.js';
 
 const ui = {
     searchBtn: document.getElementById('searchBtn'),
     userIdInput: document.getElementById('userId'),
+    apiBaseInput: document.getElementById('apiBase'),
+    saveApiBtn: document.getElementById('saveApiBtn'),
+    navItems: document.querySelectorAll('.nav-item'),
     mainContent: document.getElementById('mainContent'),
+    profileTab: document.getElementById('profileTab'),
+    settingsTab: document.getElementById('settingsTab'),
+    storeTab: document.getElementById('storeTab'),
     avatar: document.getElementById('userAvatar'),
     name: document.getElementById('userName'),
     tag: document.getElementById('userTag'),
     level: document.getElementById('userLevel'),
     xp: document.getElementById('userXP'),
-    loader: document.getElementById('loader')
+    activeTheme: document.getElementById('activeTheme'),
+    activeContour: document.getElementById('activeContour'),
+    panelPreview: document.getElementById('profilePanelPreview'),
+    descriptionInput: document.getElementById('profileDescription'),
+    accentColorInput: document.getElementById('accentColor'),
+    backgroundUrlInput: document.getElementById('backgroundUrl'),
+    saveProfileBtn: document.getElementById('saveProfileBtn'),
+    themeSelect: document.getElementById('themeSelect'),
+    contourSelect: document.getElementById('contourSelect'),
+    shopGrid: document.getElementById('shopGrid'),
+    inventoryNotice: document.getElementById('inventoryNotice')
 };
 
 // Animación de entrada suave
@@ -38,8 +54,22 @@ export function init() {
         }
     });
 
+    ui.saveApiBtn.addEventListener('click', handleSaveApiBase);
+    ui.saveProfileBtn.addEventListener('click', handleSaveProfile);
+    ui.apiBaseInput.value = getSavedApiBase() || "";
+
+    ui.navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            ui.navItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            showTab(item.dataset.target);
+        });
+    });
+
     // Agregar ripple effect al botón
     ui.searchBtn.addEventListener('mousedown', createRipple);
+    ui.saveApiBtn.addEventListener('mousedown', createRipple);
+    ui.saveProfileBtn.addEventListener('mousedown', createRipple);
 
     // 1. Prioridad: Detectar token en la URL (Link desde Discord)
     const urlParams = new URLSearchParams(window.location.search);
@@ -113,6 +143,133 @@ async function handleSearch(isToken = false) {
     }
 }
 
+function handleSaveApiBase() {
+    const base = ui.apiBaseInput.value.trim();
+    if (!base) {
+        alert("Ingresa la URL de la API pública para continuar.");
+        return;
+    }
+    setApiBase(base);
+    alert("API pública guardada. Ahora puedes sincronizar tu usuario con esa URL.");
+}
+
+function showTab(target) {
+    ui.profileTab.style.display = target === 'profileTab' ? 'block' : 'none';
+    ui.settingsTab.style.display = target === 'settingsTab' ? 'block' : 'none';
+    ui.storeTab.style.display = target === 'storeTab' ? 'block' : 'none';
+}
+
+async function handleSaveProfile() {
+    const userId = ui.userIdInput.value.trim();
+    if (!userId) return alert("Sincroniza tu perfil antes de guardar cambios.");
+
+    const changes = {
+        description: ui.descriptionInput.value.trim(),
+        accentColor: ui.accentColorInput.value.trim() || 'auto',
+        backgroundUrl: ui.backgroundUrlInput.value.trim() || 'default-1',
+        activeTheme: ui.themeSelect.value,
+        activeContour: ui.contourSelect.value
+    };
+
+    try {
+        const result = await updateUserProfile(userId, changes);
+        if (result.error) throw new Error(result.error);
+        updateProfileUI(result);
+        setPanelPreview(result.id);
+        alert("Perfil actualizado correctamente.");
+    } catch (error) {
+        console.error('Update Error:', error);
+        alert(error.message || 'No se pudo actualizar el perfil.');
+    }
+}
+
+async function loadShop(userId) {
+    try {
+        const shopData = await getShopItems();
+        const profileData = await getUserProfile(userId);
+        renderShop(shopData.shop, profileData);
+    } catch (error) {
+        console.error('Shop load error:', error);
+        ui.shopGrid.innerHTML = '<p style="color:#f55">No se pudo cargar la tienda.</p>';
+    }
+}
+
+function renderShop(shop, profileData) {
+    const inventory = profileData.inventory || { themes: ['macos'], contours: [] };
+    const activeTheme = profileData.activeTheme;
+    const activeContour = profileData.activeContour;
+
+    const renderItems = (category, items) => Object.entries(items).map(([key, item]) => {
+        const owned = category === 'themes' ? inventory.themes.includes(key) : inventory.contours.includes(key);
+        const equipped = category === 'themes' ? activeTheme === key : activeContour === key;
+        return `
+            <div class="item-card">
+                <div class="item-icon-placeholder"></div>
+                <div class="item-name">${item.name}</div>
+                <span class="rarity">${item.rarity}</span>
+                <span class="item-price">${item.price.toLocaleString()} XP</span>
+                <div class="item-actions">
+                    ${owned ? (equipped ? `<button class="btn-buy disabled" disabled>Equipado</button>` : `<button class="btn-buy" data-category="${category}" data-item="${key}">Equipar</button>`) : `<button class="btn-buy" data-category="${category}" data-item="${key}">Comprar</button>`}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    ui.shopGrid.innerHTML = `
+        <div class="shop-section-title">Temas</div>
+        ${renderItems('themes', shop.themes)}
+        <div class="shop-section-title">Contornos</div>
+        ${renderItems('contours', shop.contours)}
+    `;
+
+    ui.shopGrid.querySelectorAll('.btn-buy').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const category = btn.dataset.category;
+            const itemId = btn.dataset.item;
+            if (btn.innerText === 'Comprar') {
+                await handlePurchase(profileData.id, itemId, category);
+            } else {
+                await handleEquip(profileData.id, itemId, category);
+            }
+        });
+    });
+}
+
+async function handlePurchase(userId, itemId, category) {
+    try {
+        const result = await purchaseItem(userId, itemId, category);
+        if (result.error) throw new Error(result.error);
+        const updated = await getUserProfile(userId);
+        updateProfileUI(updated);
+        await loadShop(userId);
+        setPanelPreview(userId);
+        alert('Compra completada. Inventario actualizado.');
+    } catch (error) {
+        console.error('Purchase Error:', error);
+        alert(error.message || 'No se pudo completar la compra.');
+    }
+}
+
+async function handleEquip(userId, itemId, category) {
+    try {
+        const result = await equipItem(userId, category, itemId);
+        if (result.error) throw new Error(result.error);
+        const updated = await getUserProfile(userId);
+        updateProfileUI(updated);
+        await loadShop(userId);
+        setPanelPreview(userId);
+        alert('Item equipado correctamente.');
+    } catch (error) {
+        console.error('Equip Error:', error);
+        alert(error.message || 'No se pudo equipar este item.');
+    }
+}
+
+async function setPanelPreview(userId) {
+    const panelUrl = await getPanelUrl(userId);
+    ui.panelPreview.src = `${panelUrl}?t=${Date.now()}`;
+}
+
 function updateProfileUI(data) {
     // Animar avatar
     ui.avatar.style.opacity = '0';
@@ -153,6 +310,18 @@ function updateProfileUI(data) {
 
     // Animar XP con contador
     animateCounter(ui.xp, parseInt(data.xp));
+
+    ui.activeTheme.innerText = data.activeTheme || 'macos';
+    ui.activeContour.innerText = data.activeContour || 'none';
+
+    ui.descriptionInput.value = data.customization.description || '';
+    ui.accentColorInput.value = data.customization.accentColor === 'auto' ? '' : data.customization.accentColor;
+    ui.backgroundUrlInput.value = data.customization.backgroundUrl && data.customization.backgroundUrl !== 'default-1' ? data.customization.backgroundUrl : '';
+    ui.themeSelect.value = data.activeTheme || 'macos';
+    ui.contourSelect.value = data.activeContour || 'none';
+
+    setPanelPreview(data.id);
+    loadShop(data.id);
 }
 
 function animateCounter(element, finalValue) {
